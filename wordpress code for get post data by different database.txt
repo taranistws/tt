@@ -1,0 +1,229 @@
+<!------------------rating data*********-->
+<?php 
+// $wpdb = new wpdb();
+// $post = $wpdb->get_row("SELECT * FROM $wpdb->posts");
+ global $wpdb;
+$mydb= new wpdb('U3045696','0zTWeg3F','DB3045696','rdbms.strato.de');
+$rows = $mydb->get_results("SELECT * FROM wp_posts where post_type='review' and post_status = 'publish' order by ID DESC Limit 20");
+$rows1 = $mydb->get_results("SELECT count(*) as total FROM wp_posts where post_type='review' and post_status = 'publish'");
+
+?>
+<div style="position: fixed; bottom: 0; right: 0; background: #e2e4e6; padding: 12px; z-index: 99999; ">
+   <fieldset class="rating">
+      <legend>Bewertungen</legend>
+   
+           <div class="star">
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+         </div>
+      <h2 style="text-align: center;">SEHR GUT</h2>
+      <p style="text-align: center; color: #061E62;"><span style="font-size: 16px; font-weight: 600; color: #061e62; ">5.00/</span>5.00</p>
+      <a class="btn btn-lg btn-success" data-toggle="modal" data-target="#basicModal" style="background: #0099cc; padding: 8px; color: #fff; border-radius: 4px;margin-left: 10px;"><?php 
+	 
+echo $rows1[0]->total;
+	 
+	  
+	  ?> Bewertungen</a>
+   </fieldset>
+</div>
+<div class="col-md-12">
+   <!-- modal box -->
+   <div class="modal fade" id="basicModal" tabindex="-1" role="dialog" aria-labelledby="basicModal" aria-hidden="true">
+      <div class="modal-dialog">
+         <div class="modal-content">
+            <div class="modal-header">
+               <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+               <h4 class="modal-title" id="myModalLabel">Bewertungen</h4>
+               <div class="divider"></div>
+               <div class="col-md-12 main">
+                  <div class="col-md-6">
+                     <div class="pull-right">
+                         <fieldset class="rating" style="float:left;margin-top:-5px;">
+                            <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                     <span class="fa fa-star checked"></span>
+                         </fieldset>
+                         <span style="color: #000;"><strong style="font-size:17px;margin-left:15px;">5.00</strong>/<em>5.00</em></span>
+                     </div>
+                  </div>
+                
+                  <div class="col-md-6" style="border-left:1px solid #ddd;">
+                     <p style="color:#000;"><?php echo $rows1[0]->total;  ?> Bewertungen von mehreren Portalen</p>
+                  </div>
+               </div>
+               <!--col-sm-8-->
+               <!-- Col-sm-8 -->
+               <div class="col-sm-12 " style="background: #f7f3f3; height:600px; overflow-x:auto;">
+
+<?php
+
+//print_r($rows);
+foreach ($rows as $rows02)
+{
+?>
+                    <div class="ratting-div">
+                        <fieldset class="rating pull-left">
+						
+						
+						
+              <?php
+
+$post_id=$rows02->ID;
+$ratings = $mydb->get_results("SELECT  * FROM wp_postmeta where meta_key='Rating' and post_id='".$post_id."'");
+
+$ratings1=$ratings[0]->meta_value;
+
+ if($ratings1>0)
+ {
+                     for($i=0;$i<$ratings1;$i++)
+                     {
+              ?>
+                     <span class="fa fa-star checked"></span>
+ <?php } }  ?>
+                     
+                        </fieldset>
+                        <br>
+                        <div class="vrfy"><i class="fa fa-check"></i> VIRIFIZIERTE BEWERTUNG
+              <?php 
+
+$review_by = $mydb->get_results("SELECT  * FROM wp_postmeta where meta_key='Review_by' and post_id='".$post_id."'");
+//print_r($review_by);
+$review_by1=$review_by[0]->meta_value;
+
+               ?>
+<p style="color: #4ea235;font-weight: 400;">von <?php echo $review_by1; ?></p>
+            </div>
+                        
+                        <div class="vrfyz"><?php echo $rows02->post_content; ?></div>
+                    </div>
+
+<?php }  
+
+?>
+
+               </div>
+               <!-- End -->
+            </div>
+            <!--container-->
+         </div>
+      </div>
+   </div>
+   <!-- modal box -->
+</div>
+
+
+
+<!-------------------rating data----------->
+<style type="text/css">
+
+   /****** Style Star Rating Widget *****/
+
+.rating { 
+  border: none;
+  float: left;
+}
+
+.rating > input { display: none; } 
+.rating > label:before { 
+  margin: 5px;
+  font-size: 1.25em;
+  font-family: FontAwesome;
+  display: inline-block;
+  content: "\f005";
+}
+
+.rating > .half:before { 
+  content: "\f089";
+  position: absolute;
+}
+
+.rating > label { 
+  color:#908c8c; 
+ float: right; 
+}
+
+/***** CSS Magic to Highlight Stars on Hover *****/
+
+.rating > input:checked ~ label, /* show gold star when clicked */
+.rating:not(:checked) > label:hover, /* hover current star */
+.rating:not(:checked) > label:hover ~ label { color: #FFD700;  } /* hover previous stars in list */
+
+.rating > input:checked + label:hover, /* hover current star when changing rating */
+.rating > input:checked ~ label:hover,
+.rating > label:hover ~ input:checked ~ label, /* lighten current selection */
+.rating > input:checked ~ label:hover ~ label { color: #FFED85;  } 
+   .modal-dialog
+   {
+   width:70%;
+   }
+   legend  {
+   margin-bottom: 5px !important;
+   text-align: center;
+   }
+   .review-tille h1{
+   font-size: 18px;
+   color:#7aa783;
+   }
+   .review-tille .fa {
+   color:  #29963f;
+   }
+   
+.divider
+{
+    width:100%;
+    height:1px;
+    background:#ddd;
+    margin:20px auto;
+}
+.ratting-div
+{
+    background:#f8f8f8;
+    border:1px solid @ddd;
+    padding:20px;
+}
+.vrfy
+{
+    font-size: 14px;
+    color: #4ea235;
+    clear: both;
+    font-weight: 600;
+    margin: 10px 0px;
+}
+.vrfyp
+{
+    font-size: 14px;
+    color: #666;
+    clear: both;
+    font-weight: 100;
+    margin: 10px 0px;
+}
+.vrfyz
+{
+    font-size: 14px;
+    color: #666;
+    clear: both;
+    font-weight: 100;
+    margin: 10px 0px;
+    border-top:1px solid #444;
+    border-bottom:1px solid #444;
+    padding:10px 0px;
+}
+.checked {
+    color: orange;
+}
+.modal-title{
+   font-size: 20px;
+   color: #000;
+   font-weight: 600;
+}
+.star
+{
+   text-align: center;
+    padding-bottom: 10px;
+}
+</style>
